@@ -7,8 +7,18 @@ import 'package:provider/provider.dart';
 // dependencies:
 //   flutter:
 //     sdk: flutter
-//   provider: ^3.0.0    <<-----  new  
+//   provider: ^4.3.3    <<-----  new
 // ejemplo tomado de https://github.com/flutter/samples/tree/master/provider_counter
+
+class Counter extends ChangeNotifier {
+  // implementa un Observer al que se puede subscribir
+  int value = 0;
+
+  void increment() {
+    value += 1;
+    notifyListeners(); // aquí se notifica a todos los listeners que hay un cambio de estado
+  }
+}
 
 void main() {
   runApp(
@@ -19,17 +29,9 @@ void main() {
   );
 }
 
-
-class Counter with ChangeNotifier {  // implementa un Observer al que se puede subscribir 
-  int value = 0;
-
-  void increment() {
-    value += 1;
-    notifyListeners();  // aquí se notifica a todos los listeners que hay un cambio de estado
-  }
-}
-
 class MyApp extends StatelessWidget {
+  const MyApp({Key key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -42,7 +44,8 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class MyHomePage extends StatelessWidget {  // este Widget ya puede ser Stateless
+class MyHomePage extends StatelessWidget {
+  // este Widget ya puede ser Stateless
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -54,9 +57,11 @@ class MyHomePage extends StatelessWidget {  // este Widget ya puede ser Stateles
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text('You have pushed the button this many times:'),
-            Consumer<Counter>(  // aquí nos subscribimos a los cambios de la clase Counter
-              builder: (context, counter, child) => 
-                Text('${counter.value}',style: Theme.of(context).textTheme.display1,
+            Consumer<Counter>(
+              // aquí nos subscribimos a los cambios de la clase Counter
+              builder: (context, counter, child) => Text(
+                '${counter.value}',
+                style: Theme.of(context).textTheme.headline1,
               ),
             ),
           ],
@@ -64,9 +69,9 @@ class MyHomePage extends StatelessWidget {  // este Widget ya puede ser Stateles
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () =>
-           // aquí cambiamos el estado de la App almacenado en la clase Counter
-           // con el false declaramos que este sub widget no necesita ser reconstruido con el cambio de estado
-            Provider.of<Counter>(context, listen: false).increment(),  
+            // aquí cambiamos el estado de la App almacenado en la clase Counter
+            // con el false declaramos que este sub widget no necesita ser reconstruido con el cambio de estado
+            Provider.of<Counter>(context, listen: false).increment(),
         tooltip: 'Increment',
         child: Icon(Icons.add),
       ),
